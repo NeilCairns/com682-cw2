@@ -1,1 +1,1816 @@
-
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "connections_azureblob_name": {
+            "defaultValue": "azureblob",
+            "type": "String"
+        },
+        "connections_documentdb_name": {
+            "defaultValue": "documentdb",
+            "type": "String"
+        },
+        "workflows_la_put_recipe_name": {
+            "defaultValue": "la-put-recipe",
+            "type": "String"
+        },
+        "workflows_la_get_recipes_name": {
+            "defaultValue": "la-get-recipes",
+            "type": "String"
+        },
+        "workflows_la_recipes_api_name": {
+            "defaultValue": "la-recipes-api",
+            "type": "String"
+        },
+        "workflows_la_delete_recipe_name": {
+            "defaultValue": "la-delete-recipe",
+            "type": "String"
+        },
+        "workflows_la_get_recipe_by_id_name": {
+            "defaultValue": "la-get-recipe-by-id",
+            "type": "String"
+        },
+        "workflows_la_get_recipe_image_name": {
+            "defaultValue": "la-get-recipe-image",
+            "type": "String"
+        },
+        "workflows_la_post_recipe_image_name": {
+            "defaultValue": "la-post-recipe-image",
+            "type": "String"
+        },
+        "workflows_la_delete_recipe_image_name": {
+            "defaultValue": "la-delete-recipe-image",
+            "type": "String"
+        },
+        "storageAccounts_cairnsrecipestorage1_name": {
+            "defaultValue": "cairnsrecipestorage1",
+            "type": "String"
+        },
+        "databaseAccounts_neil_recipes_cosmos01_name": {
+            "defaultValue": "neil-recipes-cosmos01",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[parameters('databaseAccounts_neil_recipes_cosmos01_name')]",
+            "location": "UK South",
+            "tags": {
+                "defaultExperience": "Core (SQL)",
+                "hidden-workload-type": "Development/Testing",
+                "hidden-cosmos-mmspecial": ""
+            },
+            "kind": "GlobalDocumentDB",
+            "identity": {
+                "type": "None"
+            },
+            "properties": {
+                "publicNetworkAccess": "Enabled",
+                "enableAutomaticFailover": true,
+                "enableMultipleWriteLocations": false,
+                "isVirtualNetworkFilterEnabled": false,
+                "virtualNetworkRules": [],
+                "disableKeyBasedMetadataWriteAccess": false,
+                "enableFreeTier": false,
+                "enableAnalyticalStorage": false,
+                "analyticalStorageConfiguration": {
+                    "schemaType": "WellDefined"
+                },
+                "databaseAccountOfferType": "Standard",
+                "enableMaterializedViews": false,
+                "capacityMode": "Serverless",
+                "defaultIdentity": "FirstPartyIdentity",
+                "networkAclBypass": "None",
+                "disableLocalAuth": false,
+                "enablePartitionMerge": false,
+                "enablePerRegionPerPartitionAutoscale": false,
+                "enableBurstCapacity": false,
+                "enablePriorityBasedExecution": false,
+                "defaultPriorityLevel": "High",
+                "minimalTlsVersion": "Tls12",
+                "consistencyPolicy": {
+                    "defaultConsistencyLevel": "Session",
+                    "maxIntervalInSeconds": 5,
+                    "maxStalenessPrefix": 100
+                },
+                "locations": [
+                    {
+                        "locationName": "UK South",
+                        "failoverPriority": 0,
+                        "isZoneRedundant": false
+                    }
+                ],
+                "cors": [],
+                "capabilities": [],
+                "ipRules": [],
+                "backupPolicy": {
+                    "type": "Periodic",
+                    "periodicModeProperties": {
+                        "backupIntervalInMinutes": 240,
+                        "backupRetentionIntervalInHours": 8,
+                        "backupStorageRedundancy": "Geo"
+                    }
+                },
+                "networkAclBypassResourceIds": [],
+                "diagnosticLogSettings": {
+                    "enableFullTextQuery": "None"
+                },
+                "capacity": {
+                    "totalThroughputLimit": 4000
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "apiVersion": "2025-01-01",
+            "name": "[parameters('storageAccounts_cairnsrecipestorage1_name')]",
+            "location": "uksouth",
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "kind": "StorageV2",
+            "properties": {
+                "dnsEndpointType": "Standard",
+                "defaultToOAuthAuthentication": false,
+                "publicNetworkAccess": "Enabled",
+                "allowCrossTenantReplication": false,
+                "minimumTlsVersion": "TLS1_2",
+                "allowBlobPublicAccess": false,
+                "allowSharedKeyAccess": true,
+                "largeFileSharesState": "Enabled",
+                "networkAcls": {
+                    "bypass": "AzureServices",
+                    "virtualNetworkRules": [],
+                    "ipRules": [],
+                    "defaultAction": "Allow"
+                },
+                "supportsHttpsTrafficOnly": true,
+                "encryption": {
+                    "requireInfrastructureEncryption": false,
+                    "services": {
+                        "file": {
+                            "keyType": "Account",
+                            "enabled": true
+                        },
+                        "blob": {
+                            "keyType": "Account",
+                            "enabled": true
+                        }
+                    },
+                    "keySource": "Microsoft.Storage"
+                },
+                "accessTier": "Hot"
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_azureblob_name')]",
+            "location": "uksouth",
+            "kind": "V1",
+            "properties": {
+                "displayName": "new_conn_c2f39",
+                "statuses": [
+                    {
+                        "status": "Connected"
+                    }
+                ],
+                "customParameterValues": {},
+                "createdTime": "2026-01-07T18:18:06.0795004Z",
+                "changedTime": "2026-01-07T18:18:06.0795004Z",
+                "api": {
+                    "name": "[parameters('connections_azureblob_name')]",
+                    "displayName": "Azure Blob Storage",
+                    "description": "Microsoft Azure Storage provides a massively scalable, durable, and highly available storage for data on the cloud, and serves as the data storage solution for modern applications. Connect to Blob Storage to perform various operations such as create, update, get and delete on blobs in your Azure Storage account.",
+                    "iconUri": "[concat('https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1777/1.0.1777.4410/', parameters('connections_azureblob_name'), '/icon.png')]",
+                    "brandColor": "#804998",
+                    "id": "[concat('/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/', parameters('connections_azureblob_name'))]",
+                    "type": "Microsoft.Web/locations/managedApis"
+                },
+                "testLinks": [
+                    {
+                        "requestUri": "[concat('https://management.azure.com:443/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/resourceGroups/B00874181-CW2/providers/Microsoft.Web/connections/', parameters('connections_azureblob_name'), '/extensions/proxy/testconnection?api-version=2016-06-01')]",
+                        "method": "get"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Web/connections",
+            "apiVersion": "2016-06-01",
+            "name": "[parameters('connections_documentdb_name')]",
+            "location": "uksouth",
+            "kind": "V1",
+            "properties": {
+                "displayName": "new_conn_cebb3",
+                "statuses": [
+                    {
+                        "status": "Connected"
+                    }
+                ],
+                "customParameterValues": {},
+                "createdTime": "2026-01-06T17:49:56.7405072Z",
+                "changedTime": "2026-01-06T17:49:56.7405072Z",
+                "api": {
+                    "name": "[parameters('connections_documentdb_name')]",
+                    "displayName": "Azure Cosmos DB",
+                    "description": "Azure Cosmos DB is a globally distributed multi-model database service designed to enable you to elastically and independently scale throughput and storage across any number of geographical regions with a comprehensive SLA.",
+                    "iconUri": "[concat('https://conn-afd-prod-endpoint-bmc9bqahasf3grgk.b01.azurefd.net/releases/v1.0.1777/1.0.1777.4410/', parameters('connections_documentdb_name'), '/icon.png')]",
+                    "brandColor": "#1C3A56",
+                    "id": "[concat('/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/', parameters('connections_documentdb_name'))]",
+                    "type": "Microsoft.Web/locations/managedApis"
+                },
+                "testLinks": [
+                    {
+                        "requestUri": "[concat('https://management.azure.com:443/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/resourceGroups/B00874181-CW2/providers/Microsoft.Web/connections/', parameters('connections_documentdb_name'), '/extensions/proxy/testConnection?api-version=2016-06-01')]",
+                        "method": "get"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000003')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Cassandra Built-in Data Reader",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/read",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/executeQuery",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/readChangeFeed",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/entities/read"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/cassandraRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000004')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Cassandra Built-in Data Contributor",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/read",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/write",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/*",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/write",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/delete",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/*",
+                            "Microsoft.DocumentDB/databaseAccounts/cassandra/containers/entities/*"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/gremlinRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000003')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Gremlin Built-in Data Reader",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/read",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/executeQuery",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/readChangeFeed",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/entities/read"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/gremlinRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000004')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Gremlin Built-in Data Contributor",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/read",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/write",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/*",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/write",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/delete",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/*",
+                            "Microsoft.DocumentDB/databaseAccounts/gremlin/containers/entities/*"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/mongoMIRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000003')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Mongo Built-in Data Reader",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/read",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/executeQuery",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/readChangeFeed",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/entities/read"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/mongoMIRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000004')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Mongo Built-in Data Contributor",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/read",
+                            "Microsoft.DocumentDB/databaseAccounts/throughputSettings/write",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/*",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/write",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/delete",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/*",
+                            "Microsoft.DocumentDB/databaseAccounts/mongoMI/containers/entities/*"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/recipesdb')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "recipesdb"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Built-in Data Reader",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/executeQuery",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/readChangeFeed",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000002')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Built-in Data Contributor",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+                            "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/tableRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000001')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Built-in Data Reader",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/tables/containers/executeQuery",
+                            "Microsoft.DocumentDB/databaseAccounts/tables/containers/readChangeFeed",
+                            "Microsoft.DocumentDB/databaseAccounts/tables/containers/entities/read"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/tableRoleDefinitions",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/00000000-0000-0000-0000-000000000002')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "roleName": "Cosmos DB Built-in Data Contributor",
+                "type": "BuiltInRole",
+                "assignableScopes": [
+                    "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+                ],
+                "permissions": [
+                    {
+                        "dataActions": [
+                            "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+                            "Microsoft.DocumentDB/databaseAccounts/tables/*",
+                            "Microsoft.DocumentDB/databaseAccounts/tables/containers/*",
+                            "Microsoft.DocumentDB/databaseAccounts/tables/containers/entities/*"
+                        ],
+                        "notDataActions": []
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_delete_recipe_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "DELETE"
+                            }
+                        }
+                    },
+                    "actions": {
+                        "QueryById": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v5/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/query",
+                                "queries": {
+                                    "queryText": "SELECT * FROM c\nWHERE c.id = '@{triggerOutputs()['queries']['id']}'\n"
+                                }
+                            }
+                        },
+                        "Condition": {
+                            "actions": {
+                                "Response": {
+                                    "type": "Response",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "statusCode": 404,
+                                        "body": {
+                                            "error": "Recipe not found"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "QueryById": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Delete_a_document_(V2)": {
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                                }
+                                            },
+                                            "method": "delete",
+                                            "headers": {
+                                                "x-ms-documentdb-raw-partitionkey": "@concat('\"', triggerOutputs()['queries']['id'], '\"')\r\n"
+                                            },
+                                            "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs/@{encodeURIComponent(triggerOutputs()['queries']['id'])}"
+                                        }
+                                    },
+                                    "Response_1": {
+                                        "runAfter": {
+                                            "Delete_a_document_(V2)": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Response",
+                                        "kind": "Http",
+                                        "inputs": {
+                                            "statusCode": 204
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@outputs('QueryById')?['body']?['Count']\r\n",
+                                            0
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_get_recipe_by_id_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "GET"
+                            }
+                        }
+                    },
+                    "actions": {
+                        "QueryById": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v5/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/query",
+                                "queries": {
+                                    "queryText": "SELECT\n  c.id,\n  c.title,\n  c.description,\n  c.author,\n  c.createdAt\nFROM c\nWHERE c.id = '@{triggerOutputs()['queries']['id']}'\n"
+                                }
+                            }
+                        },
+                        "Condition": {
+                            "actions": {
+                                "Response_1": {
+                                    "type": "Response",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "statusCode": 404,
+                                        "body": {
+                                            "error": "Recipe not found"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "QueryById": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Response_2": {
+                                        "type": "Response",
+                                        "kind": "Http",
+                                        "inputs": {
+                                            "statusCode": 200,
+                                            "body": "@first(outputs('QueryById')?['body']?['value'])\r\n"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@empty(outputs('QueryById')?['body']?['value'])\r\n",
+                                            "@true"
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_get_recipes_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "GET"
+                            },
+                            "description": "GET /recipes"
+                        }
+                    },
+                    "actions": {
+                        "Query_documents_V5": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v5/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/query",
+                                "queries": {
+                                    "queryText": "SELECT\n  c.id,\n  c.title,\n  c.description,\n  c.author,\n  c.createdAt\nFROM c\n"
+                                }
+                            }
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "Query_documents_V5": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 200,
+                                "headers": {
+                                    "Content-Type": "application/json"
+                                },
+                                "body": "@body('Query_documents_V5')?['value']"
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_put_recipe_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "PUT",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "title": {
+                                            "type": "string"
+                                        },
+                                        "description": {
+                                            "type": "string"
+                                        },
+                                        "author": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "actions": {
+                        "QueryById": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v5/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/query",
+                                "queries": {
+                                    "queryText": "SELECT\n  c.id,\n  c.title,\n  c.description,\n  c.author,\n  c.createdAt\nFROM c\nWHERE c.id = '@{triggerOutputs()['queries']['id']}'\n"
+                                }
+                            }
+                        },
+                        "Condition": {
+                            "actions": {
+                                "Response": {
+                                    "type": "Response",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "statusCode": 404,
+                                        "body": {
+                                            "error": "Recipe not found"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "QueryById": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "UpdatedDoc": {
+                                        "type": "Compose",
+                                        "inputs": "@setProperty(\r\n  setProperty(\r\n    setProperty(\r\n      first(outputs('QueryById')?['body']?['value']),\r\n      'title',\r\n      triggerBody()?['title']\r\n    ),\r\n    'description',\r\n    triggerBody()?['description']\r\n  ),\r\n  'author',\r\n  triggerBody()?['author']\r\n)\r\n"
+                                    },
+                                    "Response_1": {
+                                        "runAfter": {
+                                            "Create_or_update_document_(V3)": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Response",
+                                        "kind": "Http",
+                                        "inputs": {
+                                            "statusCode": 200,
+                                            "body": "@outputs('UpdatedDoc')"
+                                        }
+                                    },
+                                    "Delete_a_document_(V2)": {
+                                        "runAfter": {
+                                            "UpdatedDoc": [
+                                                "Succeeded",
+                                                "TimedOut",
+                                                "Skipped",
+                                                "Failed"
+                                            ]
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['documentdb-2']['connectionId']"
+                                                }
+                                            },
+                                            "method": "delete",
+                                            "headers": {
+                                                "x-ms-documentdb-raw-partitionkey": "@concat('\"', triggerOutputs()['queries']['id'], '\"')\r\n"
+                                            },
+                                            "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs/@{encodeURIComponent(triggerOutputs()['queries']['id'])}"
+                                        }
+                                    },
+                                    "Create_or_update_document_(V3)": {
+                                        "runAfter": {
+                                            "Delete_a_document_(V2)": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['documentdb-2']['connectionId']"
+                                                }
+                                            },
+                                            "method": "post",
+                                            "body": "@outputs('UpdatedDoc')",
+                                            "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "equals": [
+                                    "@int(coalesce(outputs('QueryById')?['body']?['Count'], 0))",
+                                    0
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            },
+                            "documentdb-2": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_recipes_api_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "schema": {
+                                    "title": "Pasta",
+                                    "description": "A quick meal",
+                                    "author": "Neil"
+                                }
+                            },
+                            "description": "POST /recipes"
+                        }
+                    },
+                    "actions": {
+                        "Create_or_update_document_(V3)": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "post",
+                                "body": {
+                                    "id": "@{guid()}",
+                                    "title": "@{triggerBody()?['title']}",
+                                    "description": "@{triggerBody()?['description']}",
+                                    "author": "@{triggerBody()?['author']}",
+                                    "createdAt": "@{utcNow()}"
+                                },
+                                "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs"
+                            }
+                        },
+                        "Response": {
+                            "runAfter": {
+                                "Create_or_update_document_(V3)": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "type": "Response",
+                            "kind": "Http",
+                            "inputs": {
+                                "statusCode": 201,
+                                "headers": {
+                                    "Content-Type": "application/json"
+                                },
+                                "body": "@body('Create_or_update_document_(V3)')"
+                            }
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices",
+            "apiVersion": "2025-01-01",
+            "name": "[concat(parameters('storageAccounts_cairnsrecipestorage1_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cairnsrecipestorage1_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "containerDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "deleteRetentionPolicy": {
+                    "allowPermanentDelete": false,
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/fileServices",
+            "apiVersion": "2025-01-01",
+            "name": "[concat(parameters('storageAccounts_cairnsrecipestorage1_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cairnsrecipestorage1_name'))]"
+            ],
+            "sku": {
+                "name": "Standard_LRS",
+                "tier": "Standard"
+            },
+            "properties": {
+                "protocolSettings": {
+                    "smb": {}
+                },
+                "cors": {
+                    "corsRules": []
+                },
+                "shareDeleteRetentionPolicy": {
+                    "enabled": true,
+                    "days": 7
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/queueServices",
+            "apiVersion": "2025-01-01",
+            "name": "[concat(parameters('storageAccounts_cairnsrecipestorage1_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cairnsrecipestorage1_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/tableServices",
+            "apiVersion": "2025-01-01",
+            "name": "[concat(parameters('storageAccounts_cairnsrecipestorage1_name'), '/default')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cairnsrecipestorage1_name'))]"
+            ],
+            "properties": {
+                "cors": {
+                    "corsRules": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+            "apiVersion": "2025-05-01-preview",
+            "name": "[concat(parameters('databaseAccounts_neil_recipes_cosmos01_name'), '/recipesdb/recipes')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_neil_recipes_cosmos01_name'), 'recipesdb')]",
+                "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_neil_recipes_cosmos01_name'))]"
+            ],
+            "properties": {
+                "resource": {
+                    "id": "recipes",
+                    "indexingPolicy": {
+                        "indexingMode": "consistent",
+                        "automatic": true,
+                        "includedPaths": [
+                            {
+                                "path": "/*"
+                            }
+                        ],
+                        "excludedPaths": [
+                            {
+                                "path": "/\"_etag\"/?"
+                            }
+                        ]
+                    },
+                    "partitionKey": {
+                        "paths": [
+                            "/id"
+                        ],
+                        "kind": "Hash",
+                        "version": 2
+                    },
+                    "uniqueKeyPolicy": {
+                        "uniqueKeys": []
+                    },
+                    "conflictResolutionPolicy": {
+                        "mode": "LastWriterWins",
+                        "conflictResolutionPath": "/_ts"
+                    },
+                    "fullTextPolicy": {
+                        "defaultLanguage": "en-US",
+                        "fullTextPaths": []
+                    },
+                    "computedProperties": []
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_delete_recipe_image_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "DELETE"
+                            }
+                        }
+                    },
+                    "actions": {
+                        "QueryById": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v5/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/query",
+                                "queries": {
+                                    "queryText": "SELECT * FROM c\nWHERE c.id = '@{triggerOutputs()['queries']['id']}'\n"
+                                }
+                            }
+                        },
+                        "Condition": {
+                            "actions": {
+                                "Response": {
+                                    "type": "Response",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "statusCode": 404,
+                                        "body": {
+                                            "error": "Recipe not found"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "QueryById": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Condition_1": {
+                                        "actions": {
+                                            "Response_1": {
+                                                "type": "Response",
+                                                "kind": "Http",
+                                                "inputs": {
+                                                    "statusCode": 404,
+                                                    "body": {
+                                                        "error": "Recipe has no image"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "else": {
+                                            "actions": {
+                                                "Delete_blob_(V2)": {
+                                                    "metadata": {
+                                                        "JTJmcmVjaXBlLW1lZGlhJTJmZmQ5MGMzMmItMTdkYy00YzlmLWIxMmQtZjRiZjY0Mjk4ZmJkJTJmcGFzdGEuanBn": "/recipe-media/fd90c32b-17dc-4c9f-b12d-f4bf64298fbd/pasta.jpg"
+                                                    },
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['azureblob']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "delete",
+                                                        "headers": {
+                                                            "SkipDeleteIfFileNotFoundOnServer": false
+                                                        },
+                                                        "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files/@{encodeURIComponent(encodeURIComponent(concat('recipe-media/', first(outputs('QueryById')?['body']?['value'])?['imageBlobName'])))}"
+                                                    }
+                                                },
+                                                "DocWithoutImage": {
+                                                    "runAfter": {
+                                                        "Delete_blob_(V2)": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Compose",
+                                                    "inputs": "@setProperty(\r\n  setProperty(\r\n    setProperty(\r\n      first(outputs('QueryById')?['body']?['value']),\r\n      'imageBlobName',\r\n      null\r\n    ),\r\n    'imageContentType',\r\n    null\r\n  ),\r\n  'updatedAt',\r\n  utcNow()\r\n)\r\n"
+                                                },
+                                                "Delete_a_document_(V2)": {
+                                                    "runAfter": {
+                                                        "DocWithoutImage": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "delete",
+                                                        "headers": {
+                                                            "x-ms-documentdb-raw-partitionkey": "@concat('\"', triggerOutputs()['queries']['id'], '\"')\r\n"
+                                                        },
+                                                        "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs/@{encodeURIComponent(triggerOutputs()['queries']['id'])}"
+                                                    }
+                                                },
+                                                "Create_or_update_document_(V3)": {
+                                                    "runAfter": {
+                                                        "Delete_a_document_(V2)": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "post",
+                                                        "body": "@outputs('DocWithoutImage')",
+                                                        "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs"
+                                                    }
+                                                },
+                                                "Response_2": {
+                                                    "runAfter": {
+                                                        "Create_or_update_document_(V3)": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Response",
+                                                    "kind": "Http",
+                                                    "inputs": {
+                                                        "statusCode": 204
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "expression": {
+                                            "and": [
+                                                {
+                                                    "equals": [
+                                                        "@empty(first(outputs('QueryById')?['body']?['value'])?['imageBlobName'])\r\n",
+                                                        "@true"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "type": "If"
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@equals(outputs('QueryById')?['body']?['Count'], 0)\r\n",
+                                            0
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            },
+                            "azureblob": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/azureblob",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]",
+                                "connectionName": "azureblob",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_get_recipe_image_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "GET"
+                            }
+                        }
+                    },
+                    "actions": {
+                        "QueryById": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v5/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/query",
+                                "queries": {
+                                    "queryText": "SELECT * FROM c\nWHERE c.id = '@{triggerOutputs()['queries']['id']}'\n"
+                                }
+                            }
+                        },
+                        "Condition": {
+                            "actions": {
+                                "Response": {
+                                    "type": "Response",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "statusCode": 404,
+                                        "body": {
+                                            "error": "Recipe not found"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "QueryById": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "RecipeDoc": {
+                                        "type": "Compose",
+                                        "inputs": "@{first(outputs('QueryById')?['body']?['value'])\r\n\r\n}\n"
+                                    },
+                                    "Condition_1": {
+                                        "actions": {
+                                            "Response_1": {
+                                                "type": "Response",
+                                                "kind": "Http",
+                                                "inputs": {
+                                                    "statusCode": 404,
+                                                    "body": {
+                                                        "error": "Recipe has no image"
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "runAfter": {
+                                            "RecipeDoc": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "else": {
+                                            "actions": {
+                                                "Create_SAS_URI_by_path_(V2)": {
+                                                    "type": "ApiConnection",
+                                                    "inputs": {
+                                                        "host": {
+                                                            "connection": {
+                                                                "name": "@parameters('$connections')['azureblob']['connectionId']"
+                                                            }
+                                                        },
+                                                        "method": "post",
+                                                        "body": {
+                                                            "Permissions": "Read",
+                                                            "ExpiryTime": "@addMinutes(utcNow(), 30)\r\n"
+                                                        },
+                                                        "path": "/v2/datasets/@{encodeURIComponent('AccountNameFromSettings')}/CreateSharedLinkByPath",
+                                                        "queries": {
+                                                            "path": "@first(outputs('QueryById')?['body']?['value'])?['imageBlobName']\r\n"
+                                                        }
+                                                    }
+                                                },
+                                                "Response_2": {
+                                                    "runAfter": {
+                                                        "Create_SAS_URI_by_path_(V2)": [
+                                                            "Succeeded"
+                                                        ]
+                                                    },
+                                                    "type": "Response",
+                                                    "kind": "Http",
+                                                    "inputs": {
+                                                        "statusCode": 200,
+                                                        "body": {
+                                                            "webUrl": "@{body('Create_SAS_URI_by_path_(V2)')?['WebUrl']}",
+                                                            "sas": "@{body('Create_SAS_URI_by_path_(V2)')}",
+                                                            "contentType": "@{first(outputs('QueryById')?['body']?['value'])?['imageContentType']\r\n}"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        "expression": {
+                                            "and": [
+                                                {
+                                                    "equals": [
+                                                        "@empty(first(outputs('QueryById')?['body']?['value'])?['imageBlobName'])\r\n",
+                                                        "@true"
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "type": "If"
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@outputs('QueryById')?['body']?['Count']\r\n",
+                                            0
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            },
+                            "azureblob": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/azureblob",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]",
+                                "connectionName": "azureblob",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Logic/workflows",
+            "apiVersion": "2017-07-01",
+            "name": "[parameters('workflows_la_post_recipe_image_name')]",
+            "location": "uksouth",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]"
+            ],
+            "properties": {
+                "state": "Enabled",
+                "definition": {
+                    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+                    "contentVersion": "1.0.0.0",
+                    "parameters": {
+                        "$connections": {
+                            "defaultValue": {},
+                            "type": "Object"
+                        }
+                    },
+                    "triggers": {
+                        "When_an_HTTP_request_is_received": {
+                            "type": "Request",
+                            "kind": "Http",
+                            "inputs": {
+                                "method": "POST",
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "fileName": {
+                                            "type": "string"
+                                        },
+                                        "contentType": {
+                                            "type": "string"
+                                        },
+                                        "dataBase64": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "actions": {
+                        "QueryById": {
+                            "runAfter": {},
+                            "type": "ApiConnection",
+                            "inputs": {
+                                "host": {
+                                    "connection": {
+                                        "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                    }
+                                },
+                                "method": "get",
+                                "path": "/v5/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/query",
+                                "queries": {
+                                    "queryText": "SELECT * FROM c\nWHERE c.id = '@{triggerOutputs()['queries']['id']}'\n"
+                                }
+                            }
+                        },
+                        "Condition": {
+                            "actions": {
+                                "Response": {
+                                    "type": "Response",
+                                    "kind": "Http",
+                                    "inputs": {
+                                        "statusCode": 404,
+                                        "body": {
+                                            "error": "Recipe not found"
+                                        }
+                                    }
+                                }
+                            },
+                            "runAfter": {
+                                "QueryById": [
+                                    "Succeeded"
+                                ]
+                            },
+                            "else": {
+                                "actions": {
+                                    "Create_blob_(V2)": {
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['azureblob']['connectionId']"
+                                                }
+                                            },
+                                            "method": "post",
+                                            "body": "@base64ToBinary(triggerBody()?['dataBase64'])\r\n",
+                                            "headers": {
+                                                "Content-Type": "@triggerBody()?['contentType']\r\n",
+                                                "ReadFileMetadataFromServer": true
+                                            },
+                                            "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files",
+                                            "queries": {
+                                                "folderPath": "/recipe-media",
+                                                "name": "@concat(triggerOutputs()['queries']['id'], '/', triggerBody()?['fileName'])\r\n",
+                                                "queryParametersSingleEncoded": true
+                                            }
+                                        },
+                                        "runtimeConfiguration": {
+                                            "contentTransfer": {
+                                                "transferMode": "Chunked"
+                                            }
+                                        }
+                                    },
+                                    "UpdatedDocWithImage": {
+                                        "runAfter": {
+                                            "Create_blob_(V2)": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Compose",
+                                        "inputs": "@setProperty(\r\n  setProperty(\r\n    setProperty(\r\n      first(outputs('QueryById')?['body']?['value']),\r\n      'imageBlobName',\r\n      concat(triggerOutputs()['queries']['id'], '/', triggerBody()?['fileName'])\r\n    ),\r\n    'imageContentType',\r\n    triggerBody()?['contentType']\r\n  ),\r\n  'updatedAt',\r\n  utcNow()\r\n)\r\n"
+                                    },
+                                    "Delete_a_document_(V2)": {
+                                        "runAfter": {
+                                            "UpdatedDocWithImage": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                                }
+                                            },
+                                            "method": "delete",
+                                            "headers": {
+                                                "x-ms-documentdb-raw-partitionkey": "@concat('\"', triggerOutputs()['queries']['id'], '\"')\r\n"
+                                            },
+                                            "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs/@{encodeURIComponent(triggerOutputs()['queries']['id'])}"
+                                        }
+                                    },
+                                    "Create_or_update_document_(V3)": {
+                                        "runAfter": {
+                                            "Delete_a_document_(V2)": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "ApiConnection",
+                                        "inputs": {
+                                            "host": {
+                                                "connection": {
+                                                    "name": "@parameters('$connections')['documentdb']['connectionId']"
+                                                }
+                                            },
+                                            "method": "post",
+                                            "body": "@outputs('UpdatedDocWithImage')",
+                                            "path": "/v2/cosmosdb/@{encodeURIComponent('AccountNameFromSettings')}/dbs/@{encodeURIComponent('recipesdb')}/colls/@{encodeURIComponent('recipes')}/docs"
+                                        }
+                                    },
+                                    "Response_1": {
+                                        "runAfter": {
+                                            "Create_or_update_document_(V3)": [
+                                                "Succeeded"
+                                            ]
+                                        },
+                                        "type": "Response",
+                                        "kind": "Http",
+                                        "inputs": {
+                                            "statusCode": 200,
+                                            "body": "@outputs('UpdatedDocWithImage')"
+                                        }
+                                    }
+                                }
+                            },
+                            "expression": {
+                                "and": [
+                                    {
+                                        "equals": [
+                                            "@outputs('QueryById')?['body']?['Count']\r\n",
+                                            0
+                                        ]
+                                    }
+                                ]
+                            },
+                            "type": "If"
+                        }
+                    },
+                    "outputs": {}
+                },
+                "parameters": {
+                    "$connections": {
+                        "value": {
+                            "documentdb": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/documentdb",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_documentdb_name'))]",
+                                "connectionName": "documentdb",
+                                "connectionProperties": {}
+                            },
+                            "azureblob": {
+                                "id": "/subscriptions/7fa16e89-27c2-47ff-a080-d48cec510d06/providers/Microsoft.Web/locations/uksouth/managedApis/azureblob",
+                                "connectionId": "[resourceId('Microsoft.Web/connections', parameters('connections_azureblob_name'))]",
+                                "connectionName": "azureblob",
+                                "connectionProperties": {}
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2025-01-01",
+            "name": "[concat(parameters('storageAccounts_cairnsrecipestorage1_name'), '/default/recipe-media')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_cairnsrecipestorage1_name'), 'default')]",
+                "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_cairnsrecipestorage1_name'))]"
+            ],
+            "properties": {
+                "immutableStorageWithVersioning": {
+                    "enabled": false
+                },
+                "defaultEncryptionScope": "$account-encryption-key",
+                "denyEncryptionScopeOverride": false,
+                "publicAccess": "None"
+            }
+        }
+    ]
+}
