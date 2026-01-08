@@ -1,0 +1,32 @@
+name: CI - Validate ARM Template
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Check template.json exists
+        run: test -f infra/template.json
+
+      - name: Check parameters.dev.json exists
+        run: test -f infra/parameters.dev.json
+
+      - name: Validate JSON syntax (template + params)
+        run: |
+          python -m json.tool infra/template.json > /dev/null
+          python -m json.tool infra/parameters.dev.json > /dev/null
+
+      # Lightweight ARM template sanity checks using ARM-TTK
+      - name: Run ARM-TTK (Template Toolkit) basic checks
+        shell: pwsh
+        run: |
+          git clone --depth 1 https://github.com/Azure/arm-ttk.git
+          Import-Module ./arm-ttk/arm-ttk/arm-ttk.psd1
+          Test-AzTemplate -TemplatePath infra/template.json
