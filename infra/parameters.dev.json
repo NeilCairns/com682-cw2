@@ -1,6 +1,20 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "connections_azureblob_name": { "value": "azureblob" },
+    "connections_documentdb_name": { "value": "documentdb" },
+
+    "workflows_la_recipes_api_name": { "value": "la-recipes-api" },
+    "workflows_la_put_recipe_name": { "value": "la-put-recipe" },
+    "workflows_la_post_recipe_image_name": { "value": "la-post-recipe-image" },
+    "workflows_la_get_recipes_name": { "value": "la-get-recipes" },
+    "workflows_la_get_recipe_by_id_name": { "value": "la-get-recipe-by-id" },
+    "workflows_la_get_recipe_image_name": { "value": "la-get-recipe-image" },
+    "workflows_la_delete_recipe_image_name": { "value": "la-delete-recipe-image" },
+    "workflows_la_delete_recipe_name": { "value": "la-delete-recipe" },
+
+    "storageAccounts_cairnsrecipestorage1_name": { "value": "cairnsrecipestorage1" },
+    "databaseAccounts_neil_recipes_cosmos01_name": { "value": "neil-recipes-cosmos01" }
   }
 }
